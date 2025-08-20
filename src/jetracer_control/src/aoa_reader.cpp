@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <sstream>
 
-AOAReader ::AOAReader(const std::string &port, int baud_)
+AOAReader ::AOAReader(const std::string &port, unsigned long baud_)
     : valid_(false), port_(port), baud_rate(baud_){
         connect(); 
     }
@@ -23,13 +23,13 @@ AOAReader::~AOAReader(){
 
 void AOAReader::connect() {
     try {
-        aoa_serial.setPort(port_);
+        aoa_serial.setPort(port);
         aoa_serial.setBaudrate(baud_);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);  // 1 second timeout
         aoa_serial.setTimeout(to);
-        aoa_serial.setPartity(serial::parity_none);
+        aoa_serial.setParity(serial::parity_none);
         aoa_serial.setStopbits(serial::stopbits_one);
-        aoa_serial.setBitesize(serial::eightbits);
+        aoa_serial.setBytesize(serial::eightbits);
         aoa_serial_.setFlowcontrol(serial::flowcontrol_rtscts);
 
         aoa_serial.open();
@@ -63,11 +63,11 @@ float AOAReader::parseData() {
                 if (tokens.size() >= 3) {
                     try {
                         float angle = std::stof(tokens[2]);
-                        valid_ = true;
+                        valid = true;
                         return angle;
                     } catch (const std::exception &e) {
                         std::cerr << "Invalid float conversion: " << e.what() << std::endl;
-                        valid_ = false;
+                        valid = false;
                         return 0.0f;
                     }
                 }
@@ -78,14 +78,13 @@ float AOAReader::parseData() {
         std::cerr << "Serial read error: " << e.what() << std::endl;
     }
 
-    valid_ = false;
+    valid = false;
     return 0.0f;
 }
 
 float AOAReader::getAngle() {
     return parseData();
 }
-
 bool AOAReader::isValid() {
-    return valid_;
+    return valid ;
 }

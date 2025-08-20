@@ -4,14 +4,14 @@
 
 class LidarReader{
 public:
-    LidarReader(const std::string &port, unsigned long baud_);
+    LidarReader(const std::string &port_, unsigned long baud_);
     ~LidarReader();
 
     float getDistance();
     bool isValid();
 
 private: 
-    serial::Serial lidar_serial;
+    serial::Serial lidar_serial_;
     std::string port_;
     unsigned long baud_;
     bool valid_;

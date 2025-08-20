@@ -7,7 +7,7 @@ import time
 class HardwareTestNode(Node):
     def __init__(self):
         super().__init__('hardware_test_script')
-        self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
+self.pub = self.create_publisher(Twist, '/cmd_vel', 10) 
         time.sleep(1)  
     def run_test(self):
         cmds = [
