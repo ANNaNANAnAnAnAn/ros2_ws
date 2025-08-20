@@ -25,12 +25,20 @@ add_executable(motor_node src/motor_node.cpp)
 ament_target_dependencies(motor_node rclcpp geometry_msgs)
 target_link_libraries(motor_node motor_controller steering_controller)
 
+# Follow me node 
+add_executable(followme_node src/followme_node.cpp)
+ament_target_dependencies(followme_node rclcpp geometry_msgs)
+target_link_libraries(followme_node aoa_reader lidar_reader)
+
 
 # Install targets
 install(TARGETS
   motor_node
   motor_controller
   steering_controller
+  aoa_reader
+  lidar_reader
+  followme_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

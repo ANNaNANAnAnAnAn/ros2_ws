@@ -1,4 +1,4 @@
-#include"include/lidar_reader.hpp"
+#include"lidar_reader.hpp"
 #include<serial/serial.h>
 #include <fcntl.h>
 #include <termios.h>
@@ -9,8 +9,8 @@
 #include <sstream>
 
 
-LidarReader::LidarReader(const std::string &port, unsigned baud_){
-    :valid_(false), port_(port_), baud_rate(baud_){
+LidarReader::LidarReader(const std::string &port, unsigned long baud_){
+    :valid_(false), port_(port), baud_rate(baud_){
         connect();
     }
 }
@@ -21,19 +21,19 @@ LidarReader::~LidarReader(){
     }
 }
 
-void AOAReader::connect() {
+void LidarReader::connect() {
     try {
-        aoa_serial.setPort(port_);
-        aoa_serial.setBaudrate(baud_);
+        lidar_serial.setPort(port_);
+        lidar_serial.setBaudrate(baud_);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);  // 1 second timeout
-        aoa_serial.setTimeout(to);
-        aoa_serial.setPartity(serial::parity_none);
-        aoa_serial.setStopbits(serial::stopbits_one);
-        aoa_serial.setBitesize(serial::eightbits);
-        aoa_serial_.setFlowcontrol(serial::flowcontrol_rtscts);
+        lidar_serial.setTimeout(to);
+        lidar_serial.setParity(serial::parity_none);
+        lidar_serial.setStopbits(serial::stopbits_one);
+        lidar_serial.setBytesize(serial::eightbits);
+        lidar_serial.setFlowcontrol(serial::flowcontrol_rtscts);
 
-        aoa_serial.open();
-        if (aoa_serial.isOpen()){
+        lidar_serial.open();
+        if (lidar_serial.isOpen()){
             std::count<<"AOA device is connected on " << port_ << std::endl;
         }else{
             throw std::runtime_error("Failed to open serial port");
@@ -47,5 +47,26 @@ void AOAReader::connect() {
 
 
 float LidarReader::ParseData(){
-    
+    while (true){
+        try {
+            uint8_t first_byte;
+            if (lidar_serial.read(&first_byte,  1) != 1) continue;
+            if (first_byte != 0x59) continue;
+
+            uint8_t second_byte;
+            if (lidar_serial.read(&second_byte, 1) != 1)continue;
+            if (second_byte != 0x59) continue;
+
+             uint8_t rest[7];
+                size_t n = lidar_serial_.read(rest, 7);
+                if (n != 7) continue;
+
+                int distance = rest[1] * 256 + rest[0]; // dist_h * 256 + dist_l
+                return distance;
+
+        } catch (const std::exception &e) {
+                std::cerr << "LiDAR read error: " << e.what() << std::endl;
+                return -1;
+        }
+    }
 }

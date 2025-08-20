@@ -3,7 +3,7 @@
 #include <serial/serial.h>
 class AOAReader {
 public:
-    AOAReader(const std::string &port, unsigned long baud_ );
+    AOAReader(const std::string &port, unsigned long baud);
     ~AOAReader();
 
     float getAngle();
