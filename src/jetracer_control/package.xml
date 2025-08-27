@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>jetracer_control</name>
+  <version>0.1.0</version>
+  <description>Motor and steering controller for JetRacer using ROS 2</description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <!-- Build tools -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <!-- Dependencies -->
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <exec_depend>python3</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <!-- Export build type -->
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
